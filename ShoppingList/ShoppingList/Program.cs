@@ -10,92 +10,88 @@ internal class Program
     {
         var services = CreateServiceCollection();
 
-        var groceryItemLogic = services.GetService<IGroceryItemLogic>();
+        var groceryLogic = services.GetService<IGroceryLogic>();
 
-        groceryItemLogic.AddGroceryItem(
+        groceryLogic.AddGroceryItem(
             new GroceryItem
             {
                 Name = "PB",
                 Section = "Grocery",
                 Aisle = 8,
-                Price = 6.95m
+                Price = 6.01m
             });
 
-        groceryItemLogic.AddGroceryItem(
+        groceryLogic.AddGroceryItem(
             new GroceryItem
             {
                 Name = "Jelly",
                 Section = "Grocery",
                 Aisle = 9,
-                Price = 6.95m
+                Price = 5.01m
             });
 
-        groceryItemLogic.AddGroceryItem(
+        groceryLogic.AddGroceryItem(
             new GroceryItem
             {
                 Name = "Chips",
                 Section = "Grocery",
                 Aisle = 5,
-                Price = 4.95m
+                Price = 4.01m
             });
 
-        groceryItemLogic.AddGroceryItem(
+        groceryLogic.AddGroceryItem(
             new GroceryItem
             {
                 Name = "Milk",
                 Section = "Dairy",
                 Aisle = 1,
-                Price = 1.95m
+                Price = 2.01m
             });
 
-        groceryItemLogic.AddGroceryItem(
+        groceryLogic.AddGroceryItem(
             new GroceryItem
             {
                 Name = "Cheese",
                 Section = "Dairy",
                 Aisle = 2,
-                Price = 2.95m
+                Price = 3.01m
             });
 
-        groceryItemLogic.AddGroceryItem(
+        groceryLogic.AddGroceryItem(
             new GroceryItem
             {
                 Name = "Bread",
                 Section = "Frozen",
                 Aisle = 2,
-                Price = 7.95m
+                Price = 8.01m
             });
 
-        groceryItemLogic.AddGroceryItem(
+        groceryLogic.AddGroceryItem(
             new GroceryItem
             {
                 Name = "Ice Cream",
                 Section = "Frozen",
                 Aisle = 1,
-                Price = 9.95m
+                Price = 9.01m
             });
 
-        groceryItemLogic.AddGroceryItem(
+        groceryLogic.AddGroceryItem(
             new GroceryItem
             {
                 Name = "Apple",
                 Section = "Produce",
                 Aisle = 1,
-                Price = 0.75m
+                Price = 1.01m
             });
 
-        groceryItemLogic.AddGroceryItem(
+        groceryLogic.AddGroceryItem(
             new GroceryItem
             {
                 Name = "Banana",
                 Section = "Produce",
                 Aisle = 2,
-                Price = 0.65m
+                Price = 1.01m
             });
-
-
-
-        GroceryList groceryList = new GroceryList();
 
         string userInput = DisplayMenuAndGetInput();
 
@@ -114,7 +110,7 @@ internal class Program
                 groceryItem.Aisle = int.Parse(Console.ReadLine());
                 Console.Write("Enter the price: ");
                 groceryItem.Price = decimal.Parse(Console.ReadLine());
-                groceryItemLogic.AddGroceryItem(groceryItem);
+                groceryLogic.AddGroceryItem(groceryItem);
                 Console.WriteLine();
                 Console.WriteLine($"Added {groceryItem.Name} to grocery items");
                 Console.WriteLine();
@@ -126,7 +122,7 @@ internal class Program
                 Console.WriteLine("Enter the grocery item in JSON format:");
                 var groceryItemAsJSON = Console.ReadLine();
                 var groceryItem = JsonSerializer.Deserialize<GroceryItem>(groceryItemAsJSON);
-                groceryItemLogic.AddGroceryItem(groceryItem);
+                groceryLogic.AddGroceryItem(groceryItem);
                 Console.WriteLine();
                 Console.WriteLine($"Added {groceryItem.Name} to grocery items");
                 Console.WriteLine();
@@ -136,14 +132,14 @@ internal class Program
                 Console.Write("What is the name of the grocery item you would like to view? ");
                 var groceryItemName = Console.ReadLine();
                 Console.WriteLine();
-                var groceryItem = groceryItemLogic.GetGroceryItemByName(groceryItemName);
+                var groceryItem = groceryLogic.GetGroceryItemByName(groceryItemName);
                 Console.WriteLine(JsonSerializer.Serialize(groceryItem));
                 Console.WriteLine();
                 // Add to GroceryList
                 Console.Write("Would you like to add this item to your grocery list(y/n)? ");
                 if(Console.ReadLine().ToLower() == "y")
                 {
-                    groceryList.AddGroceryItemToGroceryList(groceryItem);
+                    groceryLogic.AddItemToGroceryList(groceryItem);
                     Console.WriteLine($"{groceryItem.Name} added to your grocery list.");
                 }
             }
@@ -151,7 +147,7 @@ internal class Program
             {
                 Console.WriteLine("The store has the following grocery items: ");
                 Console.WriteLine();
-                var allItems = groceryItemLogic.GetAllGroceryItems();
+                var allItems = groceryLogic.GetAllGroceryItems();
                 foreach (var item in allItems)
                 {
                     Console.WriteLine(JsonSerializer.Serialize(item));
@@ -161,6 +157,7 @@ internal class Program
             if (userInput == "5")
             {
                 Console.WriteLine("Grocery List: ");
+                var groceryList = groceryLogic.GetGroceryList();
                 foreach (var item in groceryList.GroceryItems)
                 {
                     Console.WriteLine(JsonSerializer.Serialize(item));
@@ -189,7 +186,7 @@ internal class Program
     static IServiceProvider CreateServiceCollection()
     {
         return new ServiceCollection()
-            .AddTransient<IGroceryItemLogic, GroceryItemLogic>()
+            .AddTransient<IGroceryLogic, GroceryLogic>()
             .BuildServiceProvider();
     }
 }
