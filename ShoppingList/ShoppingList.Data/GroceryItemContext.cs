@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace ShoppingList.Data
 {
@@ -7,7 +8,9 @@ namespace ShoppingList.Data
 	{
 		public DbSet<GroceryItem> GroceryItems { get; set; }
 
-		public GroceryItemContext()
+        public string DbPath { get; }
+
+        public GroceryItemContext()
 		{
 
 		}

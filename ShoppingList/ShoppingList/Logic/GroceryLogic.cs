@@ -19,7 +19,7 @@ namespace ShoppingList.Logic
         public void AddGroceryItem(GroceryItem item)
         {
             var validator = new GroceryItemValidator();
-            if(validator.Validate(item as GroceryItem).IsValid)
+            if(validator.Validate(item).IsValid)
             {
                 _groceryItemRepo.AddGroceryItem(item);
             }

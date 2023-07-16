@@ -6,9 +6,9 @@ namespace ShoppingList.Data
 	{
 		public int GroceryItemId { get; set; }
 
-		public string? Name { get; set; }
+		public string Name { get; set; }
 
-		public string? Section { get; set; }
+		public string Section { get; set; }
 
 		public int Aisle { get; set; }
 
