@@ -1,18 +1,18 @@
 ﻿using System;
-using ShoppingList.Models;
 using ShoppingList.Validators;
+using ShoppingList.Data;
 using System.ComponentModel.DataAnnotations;
 
 namespace ShoppingList.Logic
 {
 	public class GroceryLogic : IGroceryLogic
 	{
-		public List<GroceryItem> _groceryItems;
+		private readonly IGroceryItemRepository _groceryItemRepo;
         public GroceryList _groceryList;
 
-        public GroceryLogic()
+        public GroceryLogic(IGroceryItemRepository groceryItemRepo)
 		{
-			_groceryItems = new List<GroceryItem>();
+            _groceryItemRepo = groceryItemRepo;
             _groceryList = new GroceryList();
         }
 
@@ -21,7 +21,7 @@ namespace ShoppingList.Logic
             var validator = new GroceryItemValidator();
             if(validator.Validate(item as GroceryItem).IsValid)
             {
-                _groceryItems.Add(item);
+                _groceryItemRepo.AddGroceryItem(item);
             }
             else
             {
@@ -31,16 +31,12 @@ namespace ShoppingList.Logic
 
         public List<GroceryItem> GetAllGroceryItems()
         {
-            return _groceryItems;
+            return _groceryItemRepo.GetAllGroceryItems();
         }
 
-        public GroceryItem GetGroceryItemByName(string name)
+        public GroceryItem GetGroceryItemById(int id)
         {
-            foreach(GroceryItem item in _groceryItems)
-            {
-                if (item.Name == name) return item;
-            }
-            return null;
+            return _groceryItemRepo.GetGroceryItemById(id);
         }
 
         public void AddItemToGroceryList(GroceryItem item)
@@ -70,4 +66,3 @@ namespace ShoppingList.Logic
         }
     }
 }
-

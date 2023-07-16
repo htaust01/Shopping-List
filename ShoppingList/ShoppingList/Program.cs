@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ShoppingList.Logic;
-using ShoppingList.Models;
+using ShoppingList.Data;
 using System.Text.Json;
 
 internal class Program
@@ -11,7 +11,7 @@ internal class Program
         var services = CreateServiceCollection();
 
         var groceryLogic = services.GetService<IGroceryLogic>();
-
+        /*
         groceryLogic.AddGroceryItem(
             new GroceryItem
             {
@@ -92,7 +92,8 @@ internal class Program
                 Aisle = 2,
                 Price = 1.01m
             });
-
+        */
+        
         string userInput = DisplayMenuAndGetInput();
 
         while (userInput.ToLower() != "exit")
@@ -129,10 +130,10 @@ internal class Program
             }
             if (userInput == "3")
             {
-                Console.Write("What is the name of the grocery item you would like to view? ");
-                var groceryItemName = Console.ReadLine();
+                Console.Write("What is the id of the grocery item you would like to view? ");
+                var groceryItemName = int.Parse(Console.ReadLine());
                 Console.WriteLine();
-                var groceryItem = groceryLogic.GetGroceryItemByName(groceryItemName);
+                var groceryItem = groceryLogic.GetGroceryItemById(groceryItemName);
                 Console.WriteLine(JsonSerializer.Serialize(groceryItem));
                 Console.WriteLine();
                 // Add to GroceryList
@@ -169,7 +170,7 @@ internal class Program
             userInput = DisplayMenuAndGetInput();
         }
     }
-
+    
     static string DisplayMenuAndGetInput()
     {
         Console.WriteLine("Press 1 to add a grocery item");
@@ -187,8 +188,10 @@ internal class Program
     {
         return new ServiceCollection()
             .AddTransient<IGroceryLogic, GroceryLogic>()
+            .AddTransient<IGroceryItemRepository, GroceryItemRepository>()
             .BuildServiceProvider();
     }
+    
 }
 
 
@@ -201,3 +204,5 @@ internal class Program
 // {"Name": "Butter Pecan Ice Cream", "Section": "Frozen", "Aisle": 1, "Price": 9.95}
 // {"Name": "Apples", "Section": "Produce", "Aisle": 1, "Price": 4.95}
 // {"Name": "Bananas", "Section": "Produce", "Aisle": 2, "Price": 0.95}
+
+// {"GroceryItemId": 1, "Name": "PB", "Section": "Grocery", "Aisle": 8, "Price": 6.95}

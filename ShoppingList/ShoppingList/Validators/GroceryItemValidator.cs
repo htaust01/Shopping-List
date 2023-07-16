@@ -1,6 +1,6 @@
 ﻿using System;
 using FluentValidation;
-using ShoppingList.Models;
+using ShoppingList.Data;
 
 namespace ShoppingList.Validators
 {
@@ -11,11 +11,10 @@ namespace ShoppingList.Validators
 			var validSections = new List<string>() { "Produce", "Grocery", "Dairy", "Frozen" };
 			RuleFor(groceryItem => groceryItem.Section)
 				.Must(x => validSections.Contains(x))
-				.WithMessage("Please only use: " + String.Join("'", validSections));
+				.WithMessage("Please only use: " + String.Join(",", validSections));
 			RuleFor(groceryItem => groceryItem.Name).NotEmpty();
 			RuleFor(groceryItem => groceryItem.Price).GreaterThanOrEqualTo(0);
-			// Rule for Aisle
-		}
+            RuleFor(groceryItem => groceryItem.Aisle).GreaterThanOrEqualTo(1);
+        }
 	}
 }
-

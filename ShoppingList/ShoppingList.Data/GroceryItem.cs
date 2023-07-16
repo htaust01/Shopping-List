@@ -1,9 +1,10 @@
 ﻿using System;
-namespace ShoppingList.Models
+
+namespace ShoppingList.Data
 {
 	public class GroceryItem
 	{
-		public int Id { get; set; }
+		public int GroceryItemId { get; set; }
 
 		public string? Name { get; set; }
 
@@ -14,4 +15,3 @@ namespace ShoppingList.Models
 		public decimal Price { get; set; }
 	}
 }
-

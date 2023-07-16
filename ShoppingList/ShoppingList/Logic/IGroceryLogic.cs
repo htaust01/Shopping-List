@@ -1,5 +1,5 @@
 ﻿using System;
-using ShoppingList.Models;
+using ShoppingList.Data;
 
 namespace ShoppingList.Logic
 {
@@ -9,7 +9,7 @@ namespace ShoppingList.Logic
 
 		public List<GroceryItem> GetAllGroceryItems();
 
-		public GroceryItem GetGroceryItemByName(string name);
+		public GroceryItem GetGroceryItemById(int id);
 
         public void AddItemToGroceryList(GroceryItem item);
 
@@ -18,4 +18,3 @@ namespace ShoppingList.Logic
         public int GetIndexToInsertBySectionAisle(GroceryItem item);
     }
 }
-

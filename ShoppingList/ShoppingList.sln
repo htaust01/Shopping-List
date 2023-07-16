@@ -5,6 +5,8 @@ VisualStudioVersion = 25.0.1706.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingList", "ShoppingList\ShoppingList.csproj", "{6F735BAB-ED7B-423E-98EF-B47AD6019EB0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingList.Data", "ShoppingList.Data\ShoppingList.Data.csproj", "{92A781CC-921D-441A-816A-A5EA23537019}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{6F735BAB-ED7B-423E-98EF-B47AD6019EB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F735BAB-ED7B-423E-98EF-B47AD6019EB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F735BAB-ED7B-423E-98EF-B47AD6019EB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92A781CC-921D-441A-816A-A5EA23537019}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92A781CC-921D-441A-816A-A5EA23537019}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92A781CC-921D-441A-816A-A5EA23537019}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92A781CC-921D-441A-816A-A5EA23537019}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
