@@ -46,6 +46,18 @@ namespace ShoppingList.Logic
             _groceryList.TotalPrice += item.Price;
         }
 
+        public void AddItemToGroceryListById(int id)
+        {
+            AddItemToGroceryList(GetGroceryItemById(id));
+        }
+
+        public void RemoveGroceryItemFromListById(int id)
+        {
+            var item = GetGroceryItemById(id);
+            _groceryList.GroceryItems.Remove(item);
+            _groceryList.TotalPrice -= item.Price;
+        }
+
         public GroceryList GetGroceryList()
         {
             return _groceryList;

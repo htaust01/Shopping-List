@@ -7,6 +7,10 @@ namespace ShoppingList.Logic
 	{
         void AddItemToGroceryList(GroceryItem item);
 
+        void AddItemToGroceryListById(int id);
+
+        void RemoveGroceryItemFromListById(int id);
+
         GroceryList GetGroceryList();
 
         int GetIndexToInsertBySectionAisle(GroceryItem item);

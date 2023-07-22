@@ -13,6 +13,8 @@ internal class Program
 
         var groceryLogic = services.GetService<IGroceryLogic>();
 
+        WelcomeBanner();
+
         string emailAddress = GetEmailAddress();
 
         while (true)
@@ -28,6 +30,9 @@ internal class Program
         Console.WriteLine($"Your email address is : {emailAddress}");
         Console.WriteLine();
 
+        MainMenu(groceryLogic);
+
+        /*
         string userInput = DisplayMenuAndGetInput();
 
         while (userInput.ToLower() != "exit")
@@ -135,12 +140,7 @@ internal class Program
             }
             userInput = DisplayMenuAndGetInput();
         }
-    }
-
-    private static bool IsValidEmailAddress(string emailAddress)
-    {
-        Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
-        return regex.IsMatch(emailAddress);
+        */
     }
 
     static string GetEmailAddress()
@@ -149,6 +149,16 @@ internal class Program
         string emailAddress = Console.ReadLine();
         Console.WriteLine();
         return emailAddress;
+    }
+
+    static bool IsValidEmailAddress(string emailAddress)
+    {
+        // Regex pattern for email
+        // First match one or more a-z, A-Z, 0-9, . or - followed by an @
+        // followed by one or more a-z, A-Z, 0-9 or - followed by a .
+        // followed by 2-3 characters from a-z, A-Z, or 0-9 one or more times
+        Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+        return regex.IsMatch(emailAddress);
     }
 
     static string DisplayMenuAndGetInput()
@@ -165,6 +175,201 @@ internal class Program
         string userInput = Console.ReadLine();
         Console.WriteLine();
         return userInput;
+    }
+
+    static void WelcomeBanner()
+    {
+        Console.WriteLine("+-----------------------+");
+        Console.WriteLine("|                       |");
+        Console.WriteLine("|     Shopping List     |");
+        Console.WriteLine("|                       |");
+        Console.WriteLine("+-----------------------+");
+        Console.WriteLine();
+    }
+
+    static string GetUserInput()
+    {
+        Console.Write("-> ");
+        string userInput = Console.ReadLine();
+        Console.WriteLine();
+        return userInput;
+    }
+
+    static void MainMenu(IGroceryLogic groceryLogic)
+    {
+        bool exitCondition = false;
+        while(!exitCondition)
+        {
+            DisplayMainMenu();
+            string choice = GetUserInput();
+            switch (choice)
+            {
+                case "1":
+                    GroceryItemMenu(groceryLogic);
+                    break;
+                case "2":
+                    GroceryListMenu(groceryLogic);
+                    break;
+                case "exit":
+                    exitCondition = true;
+                    break;
+                default:
+                    Console.WriteLine("Invalid selection");
+                    break;
+            }
+        }
+    }
+
+    static void DisplayMainMenu()
+    {
+        Console.WriteLine("Press 1 to View, Add, Remove, or Edit the Grocery Items");
+        Console.WriteLine("Press 2 to View, Add to, or Remove from your Grocery List");
+        Console.WriteLine("Type 'exit' to quit");
+    }
+
+    static void GroceryItemMenu(IGroceryLogic groceryLogic)
+    {
+        bool exitCondition = false;
+        while (!exitCondition)
+        {
+            DisplayGroceryItemMenu();
+            string choice = GetUserInput();
+            switch (choice)
+            {
+                case "1":
+                    Console.WriteLine("The store has the following grocery items: ");
+                    Console.WriteLine();
+                    var allItems = groceryLogic.GetAllGroceryItems();
+                    foreach (var item in allItems)
+                    {
+                        Console.WriteLine(JsonSerializer.Serialize(item));
+                    }
+                    Console.WriteLine();
+                    break;
+                case "2":
+                    Console.WriteLine("Enter the grocery item in JSON format:");
+                    var groceryItemAsJSON = Console.ReadLine();
+                    var groceryItem = JsonSerializer.Deserialize<GroceryItem>(groceryItemAsJSON);
+                    groceryLogic.AddGroceryItem(groceryItem);
+                    Console.WriteLine();
+                    Console.WriteLine($"Added {groceryItem.Name} to grocery items");
+                    Console.WriteLine();
+                    break;
+                case "3":
+                    Console.WriteLine("Not yet implemented");
+                    break;
+                case "4":
+                    Console.WriteLine("Not yet implemented");
+                    break;
+                case "back":
+                    exitCondition = true;
+                    break;
+                default:
+                    Console.WriteLine("Invalid selection");
+                    break;
+            }
+        }
+    }
+
+    static void DisplayGroceryItemMenu()
+    {
+        Console.WriteLine("Press 1 to View the Grocery Items");
+        Console.WriteLine("Press 2 to Add a Grocery Item as JSON");
+        Console.WriteLine("Press 3 to Edit a Grocery Item");
+        Console.WriteLine("Press 4 to Remove a Grocery Item");
+        Console.WriteLine("Type 'back' to return to the Main Menu");
+        Console.Write("Choice: ");
+    }
+
+    static void GroceryListMenu(IGroceryLogic groceryLogic)
+    {
+        bool exitCondition = false;
+        while (!exitCondition)
+        {
+            DisplayGroceryListMenu();
+            string choice = GetUserInput();
+            switch (choice)
+            {
+                case "1":
+                    Console.WriteLine("Grocery List: ");
+                    var groceryList = groceryLogic.GetGroceryList();
+                    foreach (var item in groceryList.GroceryItems)
+                    {
+                        Console.WriteLine(JsonSerializer.Serialize(item));
+                    }
+                    Console.WriteLine();
+                    Console.WriteLine($"Total Price: {groceryList.TotalPrice}");
+                    Console.WriteLine();
+                    break;
+                case "2":
+                    Console.WriteLine("What is the name of the grocery item you would like to add? ");
+                    var groceryItemToAddName = GetUserInput();
+                    var namedItemsToAdd = groceryLogic.GetGroceryItemsByName(groceryItemToAddName);
+                    if (namedItemsToAdd.Count == 0)
+                        Console.WriteLine("We do not carry that item");
+                    else if (namedItemsToAdd.Count == 1)
+                        groceryLogic.AddItemToGroceryList(namedItemsToAdd[0]);
+                    else
+                    {
+                        foreach (var item in namedItemsToAdd)
+                        {
+                            Console.WriteLine(JsonSerializer.Serialize(item));
+                        }
+                        Console.WriteLine();
+                        Console.WriteLine($"Enter the Id of the {groceryItemToAddName} you would like to add.");
+                        var groceryItemId = int.Parse(GetUserInput());
+                        var namedItemsIds = namedItemsToAdd.Select(x => x.GroceryItemId);
+                        if (namedItemsIds.Contains(groceryItemId)) groceryLogic.AddItemToGroceryListById(groceryItemId);
+                        else Console.WriteLine($"There is no {groceryItemToAddName} with Id {groceryItemId}");
+                    }
+                    break;
+                case "3":
+                    Console.WriteLine("What is the name of the grocery item you would like to remove? ");
+                    var groceryItemToRemoveName = GetUserInput();
+                    var namedItemsToRemove = groceryLogic.GetGroceryItemsByName(groceryItemToRemoveName);
+                    if (namedItemsToRemove.Count == 0)
+                        Console.WriteLine("We do not carry that item");
+                    else if (namedItemsToRemove.Count == 1)
+                        groceryLogic.RemoveGroceryItemFromListById(namedItemsToRemove[0].GroceryItemId);
+                    else
+                    {
+                        foreach (var item in namedItemsToRemove)
+                        {
+                            Console.WriteLine(JsonSerializer.Serialize(item));
+                        }
+                        Console.WriteLine();
+                        Console.WriteLine($"Enter the Id of the {groceryItemToRemoveName} you would like to remove.");
+                        var groceryItemId = int.Parse(GetUserInput());
+                        var namedItemsIds = namedItemsToRemove.Select(x => x.GroceryItemId);
+                        if (namedItemsIds.Contains(groceryItemId)) groceryLogic.RemoveGroceryItemFromListById(groceryItemId);
+                        else Console.WriteLine($"There is no {groceryItemToRemoveName} with Id {groceryItemId}");
+                    }
+                    break;
+                case "4":
+                    Console.WriteLine("The most expensive item in your grocery list is:");
+                    Console.WriteLine();
+                    var mostExpensiveItem = groceryLogic.GetMostExpensiveItemInList();
+                    Console.WriteLine(JsonSerializer.Serialize(mostExpensiveItem));
+                    Console.WriteLine();
+                    break;
+                case "back":
+                    exitCondition = true;
+                    break;
+                default:
+                    Console.WriteLine("Invalid selection");
+                    break;
+            }
+        }
+    }
+
+    static void DisplayGroceryListMenu()
+    {
+        Console.WriteLine("Press 1 to View the items in your Grocery List");
+        Console.WriteLine("Press 2 to Add an item to your Grocery List");
+        Console.WriteLine("Press 3 to Remove an item from your Grocery List");
+        Console.WriteLine("Press 4 to View the most expensive item from your Grocery List");
+        Console.WriteLine("Type 'back' to return to the Main Menu");
+        Console.Write("Choice: ");
     }
 
     static IServiceProvider CreateServiceCollection()
