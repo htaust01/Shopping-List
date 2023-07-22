@@ -64,5 +64,28 @@ namespace ShoppingList.Logic
             }
             return _groceryList.GroceryItems.Count;
         }
+
+        public List<GroceryItem> GetGroceryItemsByName(string name)
+        {
+            var namedItems = _groceryItemRepo.GetGroceryItemsByName(name);
+            return namedItems;
+        }
+
+        public List<GroceryItem> GetGroceryItemsBySection(string section)
+        {
+            var sectionItems = _groceryItemRepo.GetGroceryItemsBySection(section);
+            return sectionItems;
+        }
+
+        public GroceryItem GetMostExpensiveItemInList()
+        {
+            if (_groceryList.GroceryItems.Count == 0) return null;
+            GroceryItem expensiveItem = _groceryList.GroceryItems[0];
+            foreach(var item in _groceryList.GroceryItems)
+            {
+                if (item.Price > expensiveItem.Price) expensiveItem = item;
+            }
+            return expensiveItem;
+        }
     }
 }

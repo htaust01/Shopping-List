@@ -26,12 +26,14 @@ namespace ShoppingList.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Section")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("GroceryItemId");

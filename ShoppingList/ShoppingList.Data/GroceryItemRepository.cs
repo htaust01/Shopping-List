@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Linq;
 using Microsoft.EntityFrameworkCore;
 
 namespace ShoppingList.Data
@@ -26,6 +27,20 @@ namespace ShoppingList.Data
         public GroceryItem GetGroceryItemById(int id)
         {
             return _dbContext.GroceryItems.SingleOrDefault(x => x.GroceryItemId == id);
+        }
+
+        public List<GroceryItem> GetGroceryItemsByName(string name)
+        {
+            return _dbContext.GroceryItems
+                .FromSql($"SELECT * FROM [GroceryItems] WHERE Name = {name}")
+                .ToList();
+        }
+
+        public List<GroceryItem> GetGroceryItemsBySection(string section)
+        {
+            return _dbContext.GroceryItems
+                .FromSql($"SELECT * FROM [GroceryItems] WHERE Section = {section}")
+                .ToList();
         }
     }
 }

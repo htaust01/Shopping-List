@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using ShoppingList.Logic;
 using ShoppingList.Data;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 internal class Program
 {
@@ -11,89 +12,22 @@ internal class Program
         var services = CreateServiceCollection();
 
         var groceryLogic = services.GetService<IGroceryLogic>();
-        /*
-        groceryLogic.AddGroceryItem(
-            new GroceryItem
-            {
-                Name = "PB",
-                Section = "Grocery",
-                Aisle = 8,
-                Price = 6.01m
-            });
 
-        groceryLogic.AddGroceryItem(
-            new GroceryItem
-            {
-                Name = "Jelly",
-                Section = "Grocery",
-                Aisle = 9,
-                Price = 5.01m
-            });
+        string emailAddress = GetEmailAddress();
 
-        groceryLogic.AddGroceryItem(
-            new GroceryItem
+        while (true)
+        {
+            if (IsValidEmailAddress(emailAddress)) break;
+            else
             {
-                Name = "Chips",
-                Section = "Grocery",
-                Aisle = 5,
-                Price = 4.01m
-            });
+                Console.WriteLine("The email address you entered is not a valid email address.");
+                Console.WriteLine();
+                emailAddress = GetEmailAddress();
+            }
+        }
+        Console.WriteLine($"Your email address is : {emailAddress}");
+        Console.WriteLine();
 
-        groceryLogic.AddGroceryItem(
-            new GroceryItem
-            {
-                Name = "Milk",
-                Section = "Dairy",
-                Aisle = 1,
-                Price = 2.01m
-            });
-
-        groceryLogic.AddGroceryItem(
-            new GroceryItem
-            {
-                Name = "Cheese",
-                Section = "Dairy",
-                Aisle = 2,
-                Price = 3.01m
-            });
-
-        groceryLogic.AddGroceryItem(
-            new GroceryItem
-            {
-                Name = "Bread",
-                Section = "Frozen",
-                Aisle = 2,
-                Price = 8.01m
-            });
-
-        groceryLogic.AddGroceryItem(
-            new GroceryItem
-            {
-                Name = "Ice Cream",
-                Section = "Frozen",
-                Aisle = 1,
-                Price = 9.01m
-            });
-
-        groceryLogic.AddGroceryItem(
-            new GroceryItem
-            {
-                Name = "Apple",
-                Section = "Produce",
-                Aisle = 1,
-                Price = 1.01m
-            });
-
-        groceryLogic.AddGroceryItem(
-            new GroceryItem
-            {
-                Name = "Banana",
-                Section = "Produce",
-                Aisle = 2,
-                Price = 1.01m
-            });
-        */
-        
         string userInput = DisplayMenuAndGetInput();
 
         while (userInput.ToLower() != "exit")
@@ -131,9 +65,9 @@ internal class Program
             if (userInput == "3")
             {
                 Console.Write("What is the id of the grocery item you would like to view? ");
-                var groceryItemName = int.Parse(Console.ReadLine());
+                var groceryItemId = int.Parse(Console.ReadLine());
                 Console.WriteLine();
-                var groceryItem = groceryLogic.GetGroceryItemById(groceryItemName);
+                var groceryItem = groceryLogic.GetGroceryItemById(groceryItemId);
                 Console.WriteLine(JsonSerializer.Serialize(groceryItem));
                 Console.WriteLine();
                 // Add to GroceryList
@@ -146,6 +80,30 @@ internal class Program
             }
             if (userInput == "4")
             {
+                Console.Write("What is the name of the grocery item you would like to view? ");
+                var groceryItemName = Console.ReadLine();
+                Console.WriteLine();
+                var namedItems = groceryLogic.GetGroceryItemsByName(groceryItemName);
+                foreach (var item in namedItems)
+                {
+                    Console.WriteLine(JsonSerializer.Serialize(item));
+                }
+                Console.WriteLine();
+            }
+            if (userInput == "5")
+            {
+                Console.Write("What is the section of the grocery items you would like to view(Produce, Grocery, Dairy, Frozen)? ");
+                var groceryItemSection = Console.ReadLine();
+                Console.WriteLine();
+                var sectionItems = groceryLogic.GetGroceryItemsBySection(groceryItemSection);
+                foreach (var item in sectionItems)
+                {
+                    Console.WriteLine(JsonSerializer.Serialize(item));
+                }
+                Console.WriteLine();
+            }
+            if (userInput == "6")
+            {
                 Console.WriteLine("The store has the following grocery items: ");
                 Console.WriteLine();
                 var allItems = groceryLogic.GetAllGroceryItems();
@@ -155,7 +113,7 @@ internal class Program
                 }
                 Console.WriteLine();
             }
-            if (userInput == "5")
+            if (userInput == "7")
             {
                 Console.WriteLine("Grocery List: ");
                 var groceryList = groceryLogic.GetGroceryList();
@@ -167,17 +125,42 @@ internal class Program
                 Console.WriteLine($"Total Price: {groceryList.TotalPrice}");
                 Console.WriteLine();
             }
+            if(userInput == "8")
+            {
+                Console.WriteLine("The most expensive item in your grocery list is:");
+                Console.WriteLine();
+                var mostExpensiveItem = groceryLogic.GetMostExpensiveItemInList();
+                Console.WriteLine(JsonSerializer.Serialize(mostExpensiveItem));
+                Console.WriteLine();
+            }
             userInput = DisplayMenuAndGetInput();
         }
     }
-    
+
+    private static bool IsValidEmailAddress(string emailAddress)
+    {
+        Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+        return regex.IsMatch(emailAddress);
+    }
+
+    static string GetEmailAddress()
+    {
+        Console.Write("Enter your email address: ");
+        string emailAddress = Console.ReadLine();
+        Console.WriteLine();
+        return emailAddress;
+    }
+
     static string DisplayMenuAndGetInput()
     {
         Console.WriteLine("Press 1 to add a grocery item");
         Console.WriteLine("Press 2 to add a grocery item as JSON");
-        Console.WriteLine("Press 3 to view a grocery item");
-        Console.WriteLine("Press 4 to view all grocery items");
-        Console.WriteLine("Press 5 to view your grocery list");
+        Console.WriteLine("Press 3 to view a grocery item by Id");
+        Console.WriteLine("Press 4 to view a grocery item by name");
+        Console.WriteLine("Press 5 to view a grocery items by section");
+        Console.WriteLine("Press 6 to view all grocery items");
+        Console.WriteLine("Press 7 to view your grocery list");
+        Console.WriteLine("Press 8 to view the most expensive item in your grocery list");
         Console.WriteLine("Type 'exit' to quit");
         string userInput = Console.ReadLine();
         Console.WriteLine();
@@ -204,5 +187,11 @@ internal class Program
 // {"Name": "Butter Pecan Ice Cream", "Section": "Frozen", "Aisle": 1, "Price": 9.95}
 // {"Name": "Apples", "Section": "Produce", "Aisle": 1, "Price": 4.95}
 // {"Name": "Bananas", "Section": "Produce", "Aisle": 2, "Price": 0.95}
+// {"Name": "Milk", "Section": "Dairy", "Aisle": 1, "Price": 10.95}
 
-// {"GroceryItemId": 1, "Name": "PB", "Section": "Grocery", "Aisle": 8, "Price": 6.95}
+// Current Features:
+// Query Database using raw SQL query (Get grocery item by name and also by section)
+// Create List, populate it with several values, retrieve at least one value, and use it in your program (Grocery List Most Expensive Item)
+// Implement a regex to ensure an email address is always stored and displayed in the same format
+
+// Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");

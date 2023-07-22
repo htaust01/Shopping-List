@@ -9,5 +9,9 @@ namespace ShoppingList.Data
 		GroceryItem GetGroceryItemById(int id);
 
 		List<GroceryItem> GetAllGroceryItems();
-	}
+
+		List<GroceryItem> GetGroceryItemsByName(string name);
+
+        List<GroceryItem> GetGroceryItemsBySection(string section);
+    }
 }

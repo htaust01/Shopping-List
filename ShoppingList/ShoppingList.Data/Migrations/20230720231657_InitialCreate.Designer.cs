@@ -10,7 +10,7 @@ using ShoppingList.Data;
 namespace ShoppingList.Data.Migrations
 {
     [DbContext(typeof(GroceryItemContext))]
-    [Migration("20230716171905_InitialCreate")]
+    [Migration("20230720231657_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -29,12 +29,14 @@ namespace ShoppingList.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Section")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("GroceryItemId");

@@ -12,13 +12,15 @@ namespace ShoppingList.Data
 
         public GroceryItemContext()
 		{
-
-		}
+            var folder = Environment.SpecialFolder.LocalApplicationData;
+            var path = Environment.GetFolderPath(folder);
+            DbPath = System.IO.Path.Join(path, "grocery.db");
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             // connect to sqlite database
-            options.UseSqlite(@"Data Source=GroceryItems.db");
+            options.UseSqlite($"Data Source={DbPath}");
         }
     }
 }
