@@ -33,70 +33,6 @@ internal class Program
         MainMenu(groceryLogic);
 
         /*
-        string userInput = DisplayMenuAndGetInput();
-
-        while (userInput.ToLower() != "exit")
-        {
-            if (userInput == "1")
-            {
-                var groceryItem = new GroceryItem();
-                Console.WriteLine("Creating a grocery item...");
-                Console.WriteLine();
-                Console.Write("Enter the name of the grocery item: ");
-                groceryItem.Name = Console.ReadLine();
-                Console.Write("Enter the section: ");
-                groceryItem.Section = Console.ReadLine();
-                Console.Write("Enter the aisle: ");
-                groceryItem.Aisle = int.Parse(Console.ReadLine());
-                Console.Write("Enter the price: ");
-                groceryItem.Price = decimal.Parse(Console.ReadLine());
-                groceryLogic.AddGroceryItem(groceryItem);
-                Console.WriteLine();
-                Console.WriteLine($"Added {groceryItem.Name} to grocery items");
-                Console.WriteLine();
-            }
-            if (userInput == "2")
-            {
-                Console.WriteLine("Creating a grocery item...");
-                Console.WriteLine();
-                Console.WriteLine("Enter the grocery item in JSON format:");
-                var groceryItemAsJSON = Console.ReadLine();
-                var groceryItem = JsonSerializer.Deserialize<GroceryItem>(groceryItemAsJSON);
-                groceryLogic.AddGroceryItem(groceryItem);
-                Console.WriteLine();
-                Console.WriteLine($"Added {groceryItem.Name} to grocery items");
-                Console.WriteLine();
-            }
-            if (userInput == "3")
-            {
-                Console.Write("What is the id of the grocery item you would like to view? ");
-                var groceryItemId = int.Parse(Console.ReadLine());
-                Console.WriteLine();
-                var groceryItem = groceryLogic.GetGroceryItemById(groceryItemId);
-                Console.WriteLine(JsonSerializer.Serialize(groceryItem));
-                Console.WriteLine();
-                // Add to GroceryList
-                Console.Write("Would you like to add this item to your grocery list(y/n)? ");
-                if(Console.ReadLine().ToLower() == "y")
-                {
-                    groceryLogic.AddItemToGroceryList(groceryItem);
-                    Console.WriteLine($"{groceryItem.Name} added to your grocery list.");
-                }
-            }
-            if (userInput == "4")
-            {
-                Console.Write("What is the name of the grocery item you would like to view? ");
-                var groceryItemName = Console.ReadLine();
-                Console.WriteLine();
-                var namedItems = groceryLogic.GetGroceryItemsByName(groceryItemName);
-                foreach (var item in namedItems)
-                {
-                    Console.WriteLine(JsonSerializer.Serialize(item));
-                }
-                Console.WriteLine();
-            }
-            if (userInput == "5")
-            {
                 Console.Write("What is the section of the grocery items you would like to view(Produce, Grocery, Dairy, Frozen)? ");
                 var groceryItemSection = Console.ReadLine();
                 Console.WriteLine();
@@ -106,40 +42,6 @@ internal class Program
                     Console.WriteLine(JsonSerializer.Serialize(item));
                 }
                 Console.WriteLine();
-            }
-            if (userInput == "6")
-            {
-                Console.WriteLine("The store has the following grocery items: ");
-                Console.WriteLine();
-                var allItems = groceryLogic.GetAllGroceryItems();
-                foreach (var item in allItems)
-                {
-                    Console.WriteLine(JsonSerializer.Serialize(item));
-                }
-                Console.WriteLine();
-            }
-            if (userInput == "7")
-            {
-                Console.WriteLine("Grocery List: ");
-                var groceryList = groceryLogic.GetGroceryList();
-                foreach (var item in groceryList.GroceryItems)
-                {
-                    Console.WriteLine(JsonSerializer.Serialize(item));
-                }
-                Console.WriteLine();
-                Console.WriteLine($"Total Price: {groceryList.TotalPrice}");
-                Console.WriteLine();
-            }
-            if(userInput == "8")
-            {
-                Console.WriteLine("The most expensive item in your grocery list is:");
-                Console.WriteLine();
-                var mostExpensiveItem = groceryLogic.GetMostExpensiveItemInList();
-                Console.WriteLine(JsonSerializer.Serialize(mostExpensiveItem));
-                Console.WriteLine();
-            }
-            userInput = DisplayMenuAndGetInput();
-        }
         */
     }
 
@@ -159,22 +61,6 @@ internal class Program
         // followed by 2-3 characters from a-z, A-Z, or 0-9 one or more times
         Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
         return regex.IsMatch(emailAddress);
-    }
-
-    static string DisplayMenuAndGetInput()
-    {
-        Console.WriteLine("Press 1 to add a grocery item");
-        Console.WriteLine("Press 2 to add a grocery item as JSON");
-        Console.WriteLine("Press 3 to view a grocery item by Id");
-        Console.WriteLine("Press 4 to view a grocery item by name");
-        Console.WriteLine("Press 5 to view a grocery items by section");
-        Console.WriteLine("Press 6 to view all grocery items");
-        Console.WriteLine("Press 7 to view your grocery list");
-        Console.WriteLine("Press 8 to view the most expensive item in your grocery list");
-        Console.WriteLine("Type 'exit' to quit");
-        string userInput = Console.ReadLine();
-        Console.WriteLine();
-        return userInput;
     }
 
     static void WelcomeBanner()
@@ -201,7 +87,7 @@ internal class Program
         while(!exitCondition)
         {
             DisplayMainMenu();
-            string choice = GetUserInput();
+            string choice = GetUserInput().ToLower();
             switch (choice)
             {
                 case "1":
@@ -222,7 +108,7 @@ internal class Program
 
     static void DisplayMainMenu()
     {
-        Console.WriteLine("Press 1 to View, Add, Remove, or Edit the Grocery Items");
+        Console.WriteLine("Press 1 to View, Add, Remove, or Update the Grocery Items");
         Console.WriteLine("Press 2 to View, Add to, or Remove from your Grocery List");
         Console.WriteLine("Type 'exit' to quit");
     }
@@ -233,7 +119,7 @@ internal class Program
         while (!exitCondition)
         {
             DisplayGroceryItemMenu();
-            string choice = GetUserInput();
+            string choice = GetUserInput().ToLower();
             switch (choice)
             {
                 case "1":
@@ -256,10 +142,79 @@ internal class Program
                     Console.WriteLine();
                     break;
                 case "3":
-                    Console.WriteLine("Not yet implemented");
+                    Console.WriteLine("What is the name of the grocery item you would like to update?");
+                    var groceryItemToUpdateName = GetUserInput();
+                    var namedItemsToUpdate = groceryLogic.GetGroceryItemsByName(groceryItemToUpdateName);
+                    if (namedItemsToUpdate.Count == 0)
+                        Console.WriteLine("We do not carry that item");
+                    else if(namedItemsToUpdate.Count == 1)
+                    {
+                        Console.WriteLine(JsonSerializer.Serialize(namedItemsToUpdate[0]));
+                        Console.WriteLine();
+                        Console.Write("Enter the updated Name of the item: ");
+                        namedItemsToUpdate[0].Name = Console.ReadLine();
+                        Console.Write("Enter the updated Section of the item: ");
+                        namedItemsToUpdate[0].Section = Console.ReadLine();
+                        Console.Write("Enter the updated Aisle of the item: ");
+                        namedItemsToUpdate[0].Aisle = int.Parse(Console.ReadLine());
+                        Console.Write("Enter the updated Price of the item: ");
+                        namedItemsToUpdate[0].Price = decimal.Parse(Console.ReadLine());
+                        groceryLogic.UpdateGroceryItem(namedItemsToUpdate[0]);
+                    }
+                    else
+                    {
+                        foreach (var item in namedItemsToUpdate)
+                        {
+                            Console.WriteLine(JsonSerializer.Serialize(item));
+                        }
+                        Console.WriteLine();
+                        Console.WriteLine($"Enter the Id of the {groceryItemToUpdateName} you would like to update.");
+                        var groceryItemId = int.Parse(GetUserInput());
+                        var namedItemsIds = namedItemsToUpdate.Select(x => x.GroceryItemId);
+                        if (namedItemsIds.Contains(groceryItemId))
+                        {
+                            var itemToUpdate = groceryLogic.GetGroceryItemById(groceryItemId);
+                            Console.WriteLine(JsonSerializer.Serialize(itemToUpdate));
+                            Console.WriteLine();
+                            Console.Write("Enter the updated Name of the item: ");
+                            itemToUpdate.Name = Console.ReadLine();
+                            Console.Write("Enter the updated Section of the item: ");
+                            itemToUpdate.Section = Console.ReadLine();
+                            Console.Write("Enter the updated Aisle of the item: ");
+                            itemToUpdate.Aisle = int.Parse(Console.ReadLine());
+                            Console.Write("Enter the updated Price of the item: ");
+                            itemToUpdate.Price = decimal.Parse(Console.ReadLine());
+                            groceryLogic.UpdateGroceryItem(itemToUpdate);
+                        }
+                        else Console.WriteLine($"There is no {namedItemsToUpdate} with Id {groceryItemId}");
+                    }
+                    Console.WriteLine();
                     break;
                 case "4":
-                    Console.WriteLine("Not yet implemented");
+                    Console.WriteLine("What is the name of the grocery item you would like to remove? ");
+                    var groceryItemToRemoveName = GetUserInput();
+                    var namedItemsToRemove = groceryLogic.GetGroceryItemsByName(groceryItemToRemoveName);
+                    if (namedItemsToRemove.Count == 0)
+                        Console.WriteLine("We do not carry that item");
+                    else if (namedItemsToRemove.Count == 1) groceryLogic.RemoveGroceryItem(namedItemsToRemove[0]);
+                    else
+                    {
+                        foreach (var item in namedItemsToRemove)
+                        {
+                            Console.WriteLine(JsonSerializer.Serialize(item));
+                        }
+                        Console.WriteLine();
+                        Console.WriteLine($"Enter the Id of the {groceryItemToRemoveName} you would like to remove.");
+                        var groceryItemId = int.Parse(GetUserInput());
+                        var namedItemsIds = namedItemsToRemove.Select(x => x.GroceryItemId);
+                        if (namedItemsIds.Contains(groceryItemId))
+                        {
+                            var itemToRemove = groceryLogic.GetGroceryItemById(groceryItemId);
+                            groceryLogic.RemoveGroceryItem(itemToRemove);
+                        }
+                        else Console.WriteLine($"There is no {groceryItemToRemoveName} with Id {groceryItemId}");
+                    }
+                    Console.WriteLine();
                     break;
                 case "back":
                     exitCondition = true;
@@ -275,7 +230,7 @@ internal class Program
     {
         Console.WriteLine("Press 1 to View the Grocery Items");
         Console.WriteLine("Press 2 to Add a Grocery Item as JSON");
-        Console.WriteLine("Press 3 to Edit a Grocery Item");
+        Console.WriteLine("Press 3 to Update a Grocery Item");
         Console.WriteLine("Press 4 to Remove a Grocery Item");
         Console.WriteLine("Type 'back' to return to the Main Menu");
         Console.Write("Choice: ");
@@ -287,7 +242,7 @@ internal class Program
         while (!exitCondition)
         {
             DisplayGroceryListMenu();
-            string choice = GetUserInput();
+            string choice = GetUserInput().ToLower();
             switch (choice)
             {
                 case "1":
@@ -400,3 +355,11 @@ internal class Program
 // Implement a regex to ensure an email address is always stored and displayed in the same format
 
 // Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+
+// Add View by Section
+
+// Fix Price so it isn't text using the next two lines
+// using System.ComponentModel.DataAnnotations.Schema;
+// [Column(TypeName = "decimal(18, 2)")]
+
+// Add way to save grocery list to a text file

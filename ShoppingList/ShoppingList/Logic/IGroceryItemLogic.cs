@@ -7,6 +7,10 @@ namespace ShoppingList.Logic
 	{
         void AddGroceryItem(GroceryItem item);
 
+        void RemoveGroceryItem(GroceryItem item);
+
+        void UpdateGroceryItem(GroceryItem item);
+
         List<GroceryItem> GetAllGroceryItems();
 
         GroceryItem GetGroceryItemById(int id);

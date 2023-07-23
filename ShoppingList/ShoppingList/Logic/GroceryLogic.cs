@@ -29,6 +29,16 @@ namespace ShoppingList.Logic
             }
         }
 
+        public void RemoveGroceryItem(GroceryItem item)
+        {
+            _groceryItemRepo.RemoveGroceryItem(item);
+        }
+
+        public void UpdateGroceryItem(GroceryItem item)
+        {
+            _groceryItemRepo.UpdateGroceryItem(item);
+        }
+
         public List<GroceryItem> GetAllGroceryItems()
         {
             return _groceryItemRepo.GetAllGroceryItems();

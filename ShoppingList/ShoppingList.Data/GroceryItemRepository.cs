@@ -19,6 +19,18 @@ namespace ShoppingList.Data
             _dbContext.SaveChanges();
         }
 
+        public void RemoveGroceryItem(GroceryItem item)
+        {
+            _dbContext.GroceryItems.Remove(item);
+            _dbContext.SaveChanges();
+        }
+
+        public void UpdateGroceryItem(GroceryItem item)
+        {
+            _dbContext.GroceryItems.Update(item);
+            _dbContext.SaveChanges();
+        }
+
         public List<GroceryItem> GetAllGroceryItems()
         {
             return _dbContext.GroceryItems.ToList();

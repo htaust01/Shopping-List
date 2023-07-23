@@ -6,7 +6,11 @@ namespace ShoppingList.Data
 	{
 		void AddGroceryItem(GroceryItem item);
 
-		GroceryItem GetGroceryItemById(int id);
+        void RemoveGroceryItem(GroceryItem item);
+
+		void UpdateGroceryItem(GroceryItem item);
+
+        GroceryItem GetGroceryItemById(int id);
 
 		List<GroceryItem> GetAllGroceryItems();
 
