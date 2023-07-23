@@ -138,7 +138,7 @@ internal class Program
                     var groceryItem = JsonSerializer.Deserialize<GroceryItem>(groceryItemAsJSON);
                     groceryLogic.AddGroceryItem(groceryItem);
                     Console.WriteLine();
-                    Console.WriteLine($"Added {groceryItem.Name} to grocery items");
+                    Console.WriteLine($"Added {groceryItem.Name} to grocery items.");
                     Console.WriteLine();
                     break;
                 case "3":
@@ -337,7 +337,6 @@ internal class Program
     
 }
 
-
 // {"Name": "PB", "Section": "Grocery", "Aisle": 8, "Price": 6.95}
 // {"Name": "Jelly", "Section": "Grocery", "Aisle": 9, "Price": 5.95}
 // {"Name": "Potato Chips", "Section": "Grocery", "Aisle": 5, "Price": 4.95}
@@ -354,12 +353,16 @@ internal class Program
 // Create List, populate it with several values, retrieve at least one value, and use it in your program (Grocery List Most Expensive Item)
 // Implement a regex to ensure an email address is always stored and displayed in the same format
 
-// Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+// Add View by Section or view by column where column equals value
 
-// Add View by Section
-
-// Fix Price so it isn't text using the next two lines
+// Fix Price so it isn't text using the next two lines in GroceryItem model
 // using System.ComponentModel.DataAnnotations.Schema;
 // [Column(TypeName = "decimal(18, 2)")]
 
 // Add way to save grocery list to a text file
+
+// Fix database so it is not in special folder
+
+// Seed database
+
+// GroceryList remove logic needs to be fixed, returns false if item not found in list so add message if not found

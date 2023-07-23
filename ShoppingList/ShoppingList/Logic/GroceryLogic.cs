@@ -13,6 +13,7 @@ namespace ShoppingList.Logic
         public GroceryLogic(IGroceryItemRepository groceryItemRepo)
 		{
             _groceryItemRepo = groceryItemRepo;
+            _groceryItemRepo.SeedGroceryItems();
             _groceryList = new GroceryList();
         }
 

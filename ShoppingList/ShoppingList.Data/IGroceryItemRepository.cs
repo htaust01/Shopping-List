@@ -17,5 +17,7 @@ namespace ShoppingList.Data
 		List<GroceryItem> GetGroceryItemsByName(string name);
 
         List<GroceryItem> GetGroceryItemsBySection(string section);
+
+		void SeedGroceryItems();
     }
 }
