@@ -8,19 +8,28 @@ namespace ShoppingList.Data
 	{
 		public DbSet<GroceryItem> GroceryItems { get; set; }
 
-        public string DbPath { get; }
-
         public GroceryItemContext()
 		{
-            var folder = Environment.SpecialFolder.LocalApplicationData;
-            var path = Environment.GetFolderPath(folder);
-            DbPath = System.IO.Path.Join(path, "grocery.db");
+
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             // connect to sqlite database
-            options.UseSqlite($"Data Source={DbPath}");
+            options.UseSqlite($"Data Source=../../../../ShoppingList.Data/grocery.db");
+            //options.UseSqlite($"Data Source=grocery.db");
+
+            //string path = Environment.CurrentDirectory.ToString() + "/grocery.db";
+
+            //if (!File.Exists(path))
+            //    options.UseSqlite($"Data Source=grocery.db");
+            //else
+            //    options.UseSqlite($"Data Source=../../../../ShoppingList.Data/grocery.db");
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<GroceryItem>().ToTable("GroceryItems");
         }
     }
 }

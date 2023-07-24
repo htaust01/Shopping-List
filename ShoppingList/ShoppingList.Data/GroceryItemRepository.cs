@@ -56,13 +56,6 @@ namespace ShoppingList.Data
                 .ToList();
         }
 
-        public List<GroceryItem> SelectFromGroceryItemsWhereColumnEqualsValue(string column, string value)
-        {
-            return _dbContext.GroceryItems
-                .FromSql($"SELECT * FROM [GroceryItems] WHERE {column} = {value}")
-                .ToList();
-        }
-
         public void SeedGroceryItems()
         {
             if(!_dbContext.GroceryItems.Any())

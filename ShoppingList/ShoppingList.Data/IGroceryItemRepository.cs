@@ -18,6 +18,6 @@ namespace ShoppingList.Data
 
         List<GroceryItem> GetGroceryItemsBySection(string section);
 
-		void SeedGroceryItems();
+        void SeedGroceryItems();
     }
 }

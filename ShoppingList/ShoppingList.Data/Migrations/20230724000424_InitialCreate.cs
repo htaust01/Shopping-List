@@ -19,7 +19,7 @@ namespace ShoppingList.Data.Migrations
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Section = table.Column<string>(type: "TEXT", nullable: false),
                     Aisle = table.Column<int>(type: "INTEGER", nullable: false),
-                    Price = table.Column<decimal>(type: "TEXT", nullable: false)
+                    Price = table.Column<decimal>(type: "decimal(18, 2)", nullable: false)
                 },
                 constraints: table =>
                 {

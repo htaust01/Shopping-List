@@ -4,6 +4,7 @@ using ShoppingList.Logic;
 using ShoppingList.Data;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 internal class Program
 {
@@ -15,6 +16,11 @@ internal class Program
 
         WelcomeBanner();
 
+        MainMenu(groceryLogic);
+    }
+
+    static string GetValidEmailAddress()
+    {
         string emailAddress = GetEmailAddress();
 
         while (true)
@@ -27,22 +33,7 @@ internal class Program
                 emailAddress = GetEmailAddress();
             }
         }
-        Console.WriteLine($"Your email address is : {emailAddress}");
-        Console.WriteLine();
-
-        MainMenu(groceryLogic);
-
-        /*
-                Console.Write("What is the section of the grocery items you would like to view(Produce, Grocery, Dairy, Frozen)? ");
-                var groceryItemSection = Console.ReadLine();
-                Console.WriteLine();
-                var sectionItems = groceryLogic.GetGroceryItemsBySection(groceryItemSection);
-                foreach (var item in sectionItems)
-                {
-                    Console.WriteLine(JsonSerializer.Serialize(item));
-                }
-                Console.WriteLine();
-        */
+        return emailAddress;
     }
 
     static string GetEmailAddress()
@@ -133,15 +124,26 @@ internal class Program
                     Console.WriteLine();
                     break;
                 case "2":
+                    var textinfo = new CultureInfo("en-US", false).TextInfo;
+                    Console.WriteLine("Enter the Section.");
+                    var section = textinfo.ToTitleCase(GetUserInput().ToLower());
+                    var selectedItems = groceryLogic.GetGroceryItemsBySection(section);
+                    foreach (var item in selectedItems)
+                    {
+                        Console.WriteLine(JsonSerializer.Serialize(item));
+                    }
+                    Console.WriteLine();
+                    break;
+                case "3":
                     Console.WriteLine("Enter the grocery item in JSON format:");
-                    var groceryItemAsJSON = Console.ReadLine();
+                    var groceryItemAsJSON = GetUserInput();
                     var groceryItem = JsonSerializer.Deserialize<GroceryItem>(groceryItemAsJSON);
                     groceryLogic.AddGroceryItem(groceryItem);
                     Console.WriteLine();
                     Console.WriteLine($"Added {groceryItem.Name} to grocery items.");
                     Console.WriteLine();
                     break;
-                case "3":
+                case "4":
                     Console.WriteLine("What is the name of the grocery item you would like to update?");
                     var groceryItemToUpdateName = GetUserInput();
                     var namedItemsToUpdate = groceryLogic.GetGroceryItemsByName(groceryItemToUpdateName);
@@ -190,7 +192,7 @@ internal class Program
                     }
                     Console.WriteLine();
                     break;
-                case "4":
+                case "5":
                     Console.WriteLine("What is the name of the grocery item you would like to remove? ");
                     var groceryItemToRemoveName = GetUserInput();
                     var namedItemsToRemove = groceryLogic.GetGroceryItemsByName(groceryItemToRemoveName);
@@ -229,9 +231,10 @@ internal class Program
     static void DisplayGroceryItemMenu()
     {
         Console.WriteLine("Press 1 to View the Grocery Items");
-        Console.WriteLine("Press 2 to Add a Grocery Item as JSON");
-        Console.WriteLine("Press 3 to Update a Grocery Item");
-        Console.WriteLine("Press 4 to Remove a Grocery Item");
+        Console.WriteLine("Press 2 to View the Grocery Items by Section");
+        Console.WriteLine("Press 3 to Add a Grocery Item as JSON");
+        Console.WriteLine("Press 4 to Update a Grocery Item");
+        Console.WriteLine("Press 5 to Remove a Grocery Item");
         Console.WriteLine("Type 'back' to return to the Main Menu");
         Console.Write("Choice: ");
     }
@@ -260,10 +263,12 @@ internal class Program
                     Console.WriteLine("What is the name of the grocery item you would like to add? ");
                     var groceryItemToAddName = GetUserInput();
                     var namedItemsToAdd = groceryLogic.GetGroceryItemsByName(groceryItemToAddName);
-                    if (namedItemsToAdd.Count == 0)
-                        Console.WriteLine("We do not carry that item");
+                    if (namedItemsToAdd.Count == 0) Console.WriteLine("We do not carry that item");
                     else if (namedItemsToAdd.Count == 1)
+                    {
                         groceryLogic.AddItemToGroceryList(namedItemsToAdd[0]);
+                        Console.WriteLine($"Added {groceryItemToAddName} to grocery items.");
+                    }
                     else
                     {
                         foreach (var item in namedItemsToAdd)
@@ -274,9 +279,14 @@ internal class Program
                         Console.WriteLine($"Enter the Id of the {groceryItemToAddName} you would like to add.");
                         var groceryItemId = int.Parse(GetUserInput());
                         var namedItemsIds = namedItemsToAdd.Select(x => x.GroceryItemId);
-                        if (namedItemsIds.Contains(groceryItemId)) groceryLogic.AddItemToGroceryListById(groceryItemId);
+                        if (namedItemsIds.Contains(groceryItemId))
+                        {
+                            groceryLogic.AddItemToGroceryListById(groceryItemId);
+                            Console.WriteLine($"Added {groceryItemToAddName} to grocery items.");
+                        }
                         else Console.WriteLine($"There is no {groceryItemToAddName} with Id {groceryItemId}");
                     }
+                    Console.WriteLine();
                     break;
                 case "3":
                     Console.WriteLine("What is the name of the grocery item you would like to remove? ");
@@ -307,6 +317,13 @@ internal class Program
                     Console.WriteLine(JsonSerializer.Serialize(mostExpensiveItem));
                     Console.WriteLine();
                     break;
+                case "5":
+                    string emailAddress = GetValidEmailAddress();
+                    Console.WriteLine($"Your email address is : {emailAddress}");
+                    Console.WriteLine();
+                    Console.WriteLine("The email did not send because this feature has not yet implemented");
+                    Console.WriteLine();
+                    break;
                 case "back":
                     exitCondition = true;
                     break;
@@ -323,6 +340,7 @@ internal class Program
         Console.WriteLine("Press 2 to Add an item to your Grocery List");
         Console.WriteLine("Press 3 to Remove an item from your Grocery List");
         Console.WriteLine("Press 4 to View the most expensive item from your Grocery List");
+        Console.WriteLine("Press 5 to send your Grocery List to your email");
         Console.WriteLine("Type 'back' to return to the Main Menu");
         Console.Write("Choice: ");
     }
@@ -337,23 +355,10 @@ internal class Program
     
 }
 
-// {"Name": "PB", "Section": "Grocery", "Aisle": 8, "Price": 6.95}
-// {"Name": "Jelly", "Section": "Grocery", "Aisle": 9, "Price": 5.95}
-// {"Name": "Potato Chips", "Section": "Grocery", "Aisle": 5, "Price": 4.95}
-// {"Name": "Milk", "Section": "Dairy", "Aisle": 1, "Price": 1.95}
-// {"Name": "Cheese", "Section": "Dairy", "Aisle": 2, "Price": 2.95}
-// {"Name": "Ezekiel Bread", "Section": "Frozen", "Aisle": 2, "Price": 7.95}
-// {"Name": "Butter Pecan Ice Cream", "Section": "Frozen", "Aisle": 1, "Price": 9.95}
-// {"Name": "Apples", "Section": "Produce", "Aisle": 1, "Price": 4.95}
-// {"Name": "Bananas", "Section": "Produce", "Aisle": 2, "Price": 0.95}
-// {"Name": "Milk", "Section": "Dairy", "Aisle": 1, "Price": 10.95}
-
 // Current Features:
 // Query Database using raw SQL query (Get grocery item by name and also by section)
 // Create List, populate it with several values, retrieve at least one value, and use it in your program (Grocery List Most Expensive Item)
 // Implement a regex to ensure an email address is always stored and displayed in the same format
-
-// Add View by Section or view by column where column equals value
 
 // Fix Price so it isn't text using the next two lines in GroceryItem model
 // using System.ComponentModel.DataAnnotations.Schema;
@@ -363,6 +368,10 @@ internal class Program
 
 // Fix database so it is not in special folder
 
-// Seed database
-
 // GroceryList remove logic needs to be fixed, returns false if item not found in list so add message if not found
+
+// Add comments about 2 SOLID principles S and I
+
+// Add at least 3 Unit Tests
+
+// Add Readme and update project plan

@@ -50,6 +50,7 @@ namespace ShoppingList.Logic
             return _groceryItemRepo.GetGroceryItemById(id);
         }
 
+        // Adds the item to the sorted grocery list in the correct index
         public void AddItemToGroceryList(GroceryItem item)
         {
             int index = GetIndexToInsertBySectionAisle(item);
@@ -74,6 +75,7 @@ namespace ShoppingList.Logic
             return _groceryList;
         }
 
+        // Finds the correct index to insert the new item
         public int GetIndexToInsertBySectionAisle(GroceryItem item)
         {
             if (_groceryList.GroceryItems.Count == 0) return 0;

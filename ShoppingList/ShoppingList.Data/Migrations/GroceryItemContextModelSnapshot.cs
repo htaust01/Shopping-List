@@ -30,7 +30,7 @@ namespace ShoppingList.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Section")
                         .IsRequired()
@@ -38,7 +38,7 @@ namespace ShoppingList.Data.Migrations
 
                     b.HasKey("GroceryItemId");
 
-                    b.ToTable("GroceryItems");
+                    b.ToTable("GroceryItems", (string)null);
                 });
 #pragma warning restore 612, 618
         }
