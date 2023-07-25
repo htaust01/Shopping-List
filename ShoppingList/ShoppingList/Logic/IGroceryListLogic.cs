@@ -9,7 +9,7 @@ namespace ShoppingList.Logic
 
         void AddItemToGroceryListById(int id);
 
-        void RemoveGroceryItemFromListById(int id);
+        bool RemoveGroceryItemFromListById(int id);
 
         GroceryList GetGroceryList();
 

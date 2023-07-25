@@ -63,11 +63,12 @@ namespace ShoppingList.Logic
             AddItemToGroceryList(GetGroceryItemById(id));
         }
 
-        public void RemoveGroceryItemFromListById(int id)
+        public bool RemoveGroceryItemFromListById(int id)
         {
             var item = GetGroceryItemById(id);
-            _groceryList.GroceryItems.Remove(item);
-            _groceryList.TotalPrice -= item.Price;
+            var wasRemoved = _groceryList.GroceryItems.Remove(item);
+            if (wasRemoved) _groceryList.TotalPrice -= item.Price;
+            return wasRemoved;
         }
 
         public GroceryList GetGroceryList()
