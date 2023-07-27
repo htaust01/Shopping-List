@@ -109,7 +109,7 @@ namespace ShoppingList.UI
                             Console.WriteLine();
                             Console.Write("Enter the updated Name of the item: ");
                             namedItemsToUpdate[0].Name = Console.ReadLine();
-                            Console.Write("Enter the updated Section of the item: ");
+                            Console.Write("Enter the updated Section of the item(Produce, Grocery, Dairy, or Frozen): ");
                             namedItemsToUpdate[0].Section = Console.ReadLine();
                             Console.Write("Enter the updated Aisle of the item: ");
                             namedItemsToUpdate[0].Aisle = int.Parse(Console.ReadLine());
@@ -292,6 +292,11 @@ namespace ShoppingList.UI
                         Console.WriteLine("The email did not send because this feature has not yet implemented.");
                         Console.WriteLine();
                         break;
+                    case "6":
+                        Task saveFileTask = SaveGroceryListLogic.SaveGroceryListToFile(groceryLogic.GetGroceryList());
+                        Console.WriteLine("Your Grocery List was saved. Look for it in the bin as grocerylist.txt");
+                        Console.WriteLine();
+                        break;
                     case "back":
                         exitCondition = true;
                         break;
@@ -309,6 +314,7 @@ namespace ShoppingList.UI
             Console.WriteLine("Press 3 to Remove an item from your Grocery List");
             Console.WriteLine("Press 4 to View the most expensive item from your Grocery List");
             Console.WriteLine("Press 5 to send your Grocery List to your email");
+            Console.WriteLine("Press 6 to save your Grocery List to a text file");
             Console.WriteLine("Type 'back' to return to the Main Menu");
             Console.Write("Choice: ");
         }
